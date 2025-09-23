@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ВЛАДИШУРМА - Шаурма от Владика</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, #ff8c00, #ff4500);
+            color: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            color: #ff4500;
+            font-size: 24px;
+            border: 3px solid #ff8c00;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            padding-top: 10px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: background 0.3s;
+        }
+        
+        nav a.active {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* Main Content */
+        .page {
+            display: none;
+            padding: 20px 0;
+            min-height: calc(100vh - 150px);
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        h2 {
+            color: #ff4500;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 24px;
+        }
+        
+        /* Menu Items */
+        .menu-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .menu-item img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .item-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .item-price {
+            color: #ff4500;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .add-ons {
+            margin-top: 10px;
+        }
+        
+        .add-on {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .add-on:last-child {
+            border-bottom: none;
+        }
+        
+        .add-on-name {
+            flex-grow: 1;
+        }
+        
+        .add-on-price {
+            color: #ff4500;
+            font-weight: bold;
+        }
+        
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff4500;
+            border-radius: 4px;
+            margin-right: 10px;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .checkbox.checked:after {
+            content: "✓";
+            position: absolute;
+            color: #ff4500;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background: #ff4500;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .quantity {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        
+        .add-to-cart {
+            background: #ff4500;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .add-to-cart:hover {
+            background: #e03d00;
+        }
+        
+        /* Cart Page */
+        .cart-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        
+        .cart-item-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-addons {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-price {
+            color: #ff4500;
+            font-weight: bold;
+        }
+        
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+        }
+        
+        .cart-total {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .checkout-btn {
+            background: #ff4500;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-top: 15px;
+            width: 100%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .checkout-btn:hover {
+            background: #e03d00;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+        
+        /* About Page */
+        .about-content {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .about-text {
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .contact-info {
+            background: #fff9f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ff4500;
+        }
+        
+        .contact-item {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .contact-icon {
+            width: 30px;
+            color: #ff4500;
+            font-size: 18px;
+        }
+        
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 20px;
+        }
+        
+        .cart-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff4500;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 99;
+            cursor: pointer;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .modal-title {
+            color: #ff4500;
+            margin-bottom: 15px;
+        }
+        
+        .modal-close {
+            background: #ff4500;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .order-form {
+            text-align: left;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .send-order-btn {
+            background: #ff4500;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .send-order-btn:hover {
+            background: #e03d00;
+        }
+        
+        .remove-item {
+            color: #ff4500;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo">ВШ</div>
+                <div class="logo-text">ВЛАДИШУРМА</div>
+            </div>
+            <nav>
+                <a href="#" class="nav-link active" data-page="menu">Меню</a>
+                <a href="#" class="nav-link" data-page="cart">Корзина</a>
+                <a href="#" class="nav-link" data-page="about">О нас</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="container">
+        <!-- Menu Page -->
+        <section id="menu" class="page active">
+            <h2>Наше меню</h2>
+            
+            <!-- Шаурма классическая -->
+            <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1626700051175-6818013e1d4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Классическая шаурма">
+                <div class="item-title">Классическая шаурма</div>
+                <div class="item-price">250 ₽</div>
+                <div class="item-description">Свежая лепешка, мясо, овощи и соус</div>
+                
+                <div class="add-ons">
+                    <div class="add-on">
+                        <span class="checkbox" data-addon="cheese"></span>
+                        <span class="add-on-name">Сыр</span>
+                        <span class="add-on-price">+30 ₽</span>
+                    </div>
+                    <div class="add-on">
+                        <span class="checkbox" data-addon="mushrooms"></span>
+                        <span class="add-on-name">Грибы</span>
+                        <span class="add-on-price">+25 ₽</span>
+                    </div>
+                    <div class="add-on">
+                        <span class="checkbox" data-addon="jalapeno"></span>
+                        <span class="add-on-name">Халапеньо</span>
+                        <span class="add-on-price">+20 ₽</span>
+                    </div>
+                    <div class="add-on">
+                        <span class="checkbox" data-addon="extra-sauce"></span>
+                        <span class="add-on-name">Дополнительный соус</span>
+                        <span class="add-on-price">+15 ₽</span>
+                    </div>
+                </div>
+                
+                <div class="quantity-controls">
+                    <button class="quantity-btn minus">-</button>
+                    <span class="quantity">1</span>
+                    <button class="quantity-btn plus">+</button>
+                </div>
+                
+                <button class="add-to-cart" data-item="classic-shawarma" data-price="250" data-name="Классическая шаурма" data-image="https://images.unsplash.com/photo-1626700051175-6818013e1d4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80">Добавить в корзину</button>
+            </div>
+            
+            <!-- Шаурма острая -->
+            <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1551782450-17144efb9c50?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Острая шаурма">
+                <div class="item-title">Острая шаурма</div>
+                <div class="item-price">270 ₽</div>
+                <div class="item-description">С острым соусом и перцем чили</div>
+                
+                <div class="add-ons">
+                    <div class="add-on">
+                        <span class="checkbox" data-addon="cheese"></span>
+                        <span class="add-on-name">Сыр</span>
+                        <span class="add-on-price">+30 ₽</span>
+                    </div>
+                    <div class="add-on">
+                        <span class="checkbox" data-addon="mushrooms"></span>
+                        <span class="add-on-name">Грибы</span>
+                        <span class="add-on-price">+25 ₽</span>
+                    </div>
+                    <div class="add-on">
+                        <span class="checkbox" data-addon="jalapeno"></span>
+                        <span class="add-on-name">Халапеньо</span>
+                        <span class="add-on-price">+20 ₽</span>
+                    </div>
+                    <div class="add-on">
+                        <span class="checkbox" data-addon="extra-sauce"></span>
+                        <span class="add-on-name">Дополнительный соус</span>
+                        <span class="add-on-price">+15 ₽</span>
+                    </div>
+                </div>
+                
+                <div class="quantity-controls">
+                    <button class="quantity-btn minus">-</button>
+                    <span class="quantity">1</span>
+                    <button class="quantity-btn plus">+</button>
+                </div>
+                
+                <button class="add-to-cart" data-item="spicy-shawarma" data-price="270" data-name="Острая шаурма" data-image="https://images.unsplash.com/photo-1551782450-17144efb9c50?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80">Добавить в корзину</button>
+            </div>
+            
+            <!-- Кока-кола -->
+            <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Кока-кола">
+                <div class="item-title">Кока-Кола</div>
+                <div class="item-price">100 ₽</div>
+                <div class="item-description">0.5л</div>
+                
+                <div class="quantity-controls">
+                    <button class="quantity-btn minus">-</button>
+                    <span class="quantity">1</span>
+                    <button class="quantity-btn plus">+</button>
+                </div>
+                
+                <button class="add-to-cart" data-item="coca-cola" data-price="100" data-name="Кока-Кола" data-image="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80">Добавить в корзину</button>
+            </div>
+        </section>
+        
+        <!-- Cart Page -->
+        <section id="cart" class="page">
+            <h2>Корзина</h2>
+            
+            <div id="cart-items">
+                <!-- Cart items will be added here dynamically -->
+            </div>
+            
+            <div id="empty-cart-message" class="empty-cart" style="display: none;">
+                <p>Ваша корзина пуста</p>
+                <p>Перейдите в меню, чтобы добавить товары</p>
+            </div>
+            
+            <div id="cart-total" class="cart-total" style="display: none;">
+                Итого: <span id="total-amount">0</span> ₽
+            </div>
+            
+            <button id="checkout-btn" class="checkout-btn" style="display: none;">Оформить заказ</button>
+        </section>
+        
+        <!-- About Page -->
+        <section id="about" class="page">
+            <h2>О нас</h2>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Добро пожаловать в "ВЛАДИШУРМА" - место, где готовят самую вкусную шаурму в городе!</p>
+                    <p>Наш магазин был основан Владиком, который с любовью и вниманием к деталям создает каждую шаурму. Мы используем только свежие ингредиенты и секретные рецепты соусов, которые делают нашу шаурму неповторимой.</p>
+                    <p>Мы гордимся тем, что предлагаем нашим клиентам не просто быструю еду, а настоящий кулинарный опыт, который запомнится надолго.</p>
+                </div>
+                
+                <div class="contact-info">
+                    <h3>Контактная информация</h3>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>ул. Шаурменная, д. 15, г. Владикавказ</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div>+7 (900) 123-45-67</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">⏰</div>
+                        <div>Ежедневно с 10:00 до 22:00</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>© 2023 ВЛАДИШУРМА. Все права защищены.</p>
+        </div>
+    </footer>
+    
+    <div class="cart-indicator" id="cart-indicator">0</div>
+    
+    <!-- Modal for order form -->
+    <div class="modal" id="order-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Оформление заказа</h3>
+            <form class="order-form" id="order-form">
+                <div class="form-group">
+                    <label for="customer-name">Ваше имя:</label>
+                    <input type="text" id="customer-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="customer-phone">Телефон:</label>
+                    <input type="tel" id="customer-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="customer-address">Адрес доставки:</label>
+                    <input type="text" id="customer-address" required>
+                </div>
+                <div class="form-group">
+                    <label for="order-comments">Комментарий к заказу:</label>
+                    <textarea id="order-comments"></textarea>
+                </div>
+                <button type="submit" class="send-order-btn">Отправить заказ в Telegram</button>
+            </form>
+            <button class="modal-close" id="order-modal-close">Отмена</button>
+        </div>
+    </div>
+    
+    <!-- Modal for order confirmation -->
+    <div class="modal" id="confirmation-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Заказ отправлен!</h3>
+            <p>Ваш заказ успешно отправлен в Telegram. Мы свяжемся с вами в ближайшее время для подтверждения.</p>
+            <button class="modal-close" id="confirmation-modal-close">ОК</button>
+        </div>
+    </div>
+    
+    <script>
+        // Cart data
+        let cart = [];
+        
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding page
+                const pageId = this.getAttribute('data-page');
+                document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+                
+                // If cart page is opened, update it
+                if (pageId === 'cart') {
+                    updateCartPage();
+                }
+            });
+        });
+        
+        // Add-ons selection
+        document.querySelectorAll('.checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+        
+        // Quantity controls
+        document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const quantityElement = this.parentElement.querySelector('.quantity');
+                let quantity = parseInt(quantityElement.textContent);
+                quantityElement.textContent = quantity + 1;
+            });
+        });
+        
+        document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const quantityElement = this.parentElement.querySelector('.quantity');
+                let quantity = parseInt(quantityElement.textContent);
+                if (quantity > 1) {
+                    quantityElement.textContent = quantity - 1;
+                }
+            });
+        });
+        
+        // Add to cart functionality
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Get item data
+                const itemId = this.getAttribute('data-item');
+                const itemName = this.getAttribute('data-name');
+                const itemPrice = parseInt(this.getAttribute('data-price'));
+                const itemImage = this.getAttribute('data-image');
+                
+                // Get quantity
+                const quantity = parseInt(this.parentElement.querySelector('.quantity').textContent);
+                
+                // Get selected add-ons
+                const addOns = [];
+                this.parentElement.querySelectorAll('.checkbox.checked').forEach(checkbox => {
+                    const addonName = checkbox.parentElement.querySelector('.add-on-name').textContent;
+                    const addonPrice = parseInt(checkbox.parentElement.querySelector('.add-on-price').textContent.replace('+', '').replace(' ₽', ''));
+                    addOns.push({ name: addonName, price: addonPrice });
+                });
+                
+                // Calculate total price
+                let totalPrice = itemPrice * quantity;
+                addOns.forEach(addon => {
+                    totalPrice += addon.price * quantity;
+                });
+                
+                // Add to cart
+                cart.push({
+                    id: itemId + '-' + Date.now(), // Unique ID for each cart item
+                    itemId: itemId,
+                    name: itemName,
+                    basePrice: itemPrice,
+                    quantity: quantity,
+                    addOns: addOns,
+                    totalPrice: totalPrice,
+                    image: itemImage
+                });
+                
+                // Update cart indicator
+                updateCartIndicator();
+                
+                // Show confirmation
+                showModal('cart-modal');
+            });
+        });
+        
+        // Update cart indicator
+        function updateCartIndicator() {
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cart-indicator').textContent = totalItems;
+        }
+        
+        // Update cart page
+        function updateCartPage() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+            const cartTotal = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const totalAmount = document.getElementById('total-amount');
+            
+            // Clear cart items container
+            cartItemsContainer.innerHTML = '';
+            
+            if (cart.length === 0) {
+                emptyCartMessage.style.display = 'block';
+                cartTotal.style.display = 'none';
+                checkoutBtn.style.display = 'none';
+            } else {
+                emptyCartMessage.style.display = 'none';
+                cartTotal.style.display = 'block';
+                checkoutBtn.style.display = 'block';
+                
+                // Calculate total amount
+                const total = cart.reduce((sum, item) => sum + item.totalPrice, 0);
+                totalAmount.textContent = total;
+                
+                // Add each cart item
+                cart.forEach((item, index) => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    cartItem.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.name} x${item.quantity}</div>
+                            ${item.addOns.length > 0 ? `<div class="cart-item-addons">${item.addOns.map(addon => addon.name).join(', ')}</div>` : ''}
+                            <div class="cart-item-price">${item.totalPrice} ₽</div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="remove-item" data-index="${index}">×</button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(cartItem);
+                });
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-item').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        cart.splice(index, 1);
+                        updateCartPage();
+                        updateCartIndicator();
+                    });
+                });
+            }
+        }
+        
+        // Checkout button
+        document.getElementById('checkout-btn').addEventListener('click', function() {
+            showModal('order-modal');
+        });
+        
+        // Order form submission
+        document.getElementById('order-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const name = document.getElementById('customer-name').value;
+            const phone = document.getElementById('customer-phone').value;
+            const address = document.getElementById('customer-address').value;
+            const comments = document.getElementById('order-comments').value;
+            
+            // Prepare order details
+            let orderDetails = `Новый заказ из ВЛАДИШУРМА:\n\n`;
+            orderDetails += `Имя: ${name}\n`;
+            orderDetails += `Телефон: ${phone}\n`;
+            orderDetails += `Адрес: ${address}\n`;
+            if (comments) {
+                orderDetails += `Комментарий: ${comments}\n`;
+            }
+            orderDetails += `\nЗаказ:\n`;
+            
+            cart.forEach(item => {
+                orderDetails += `- ${item.name} x${item.quantity} - ${item.totalPrice} ₽\n`;
+                if (item.addOns.length > 0) {
+                    orderDetails += `  Добавки: ${item.addOns.map(addon => addon.name).join(', ')}\n`;
+                }
+            });
+            
+            orderDetails += `\nИтого: ${cart.reduce((sum, item) => sum + item.totalPrice, 0)} ₽`;
+            
+            // Send to Telegram (this would need a backend in a real implementation)
+            // For demo purposes, we'll just show a confirmation
+            console.log('Order details:', orderDetails);
+            
+            // In a real implementation, you would send this to your Telegram bot
+            // Example: fetch('/api/send-to-telegram', { method: 'POST', body: JSON.stringify({ message: orderDetails }) })
+            
+            // Show confirmation
+            hideModal('order-modal');
+            showModal('confirmation-modal');
+            
+            // Clear cart
+            cart = [];
+            updateCartIndicator();
+            updateCartPage();
+        });
+        
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        function hideModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        document.getElementById('modal-close').addEventListener('click', function() {
+            hideModal('cart-modal');
+        });
+        
+        document.getElementById('order-modal-close').addEventListener('click', function() {
+            hideModal('order-modal');
+        });
+        
+        document.getElementById('confirmation-modal-close').addEventListener('click', function() {
+            hideModal('confirmation-modal');
+        });
+        
+        // Cart indicator click
+        document.getElementById('cart-indicator').addEventListener('click', function() {
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector('.nav-link[data-page="cart"]').classList.add('active');
+            
+            // Show cart page
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('cart').classList.add('active');
+            
+            // Update cart page
+            updateCartPage();
+        });
+    </script>
+</body>
+</html>
